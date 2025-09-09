@@ -2,9 +2,7 @@ const pool = require("../config/database");
 
 const getCards = async () => {
     const result = await pool.query(
-        `SELECT *
-         FROM cards
-         `
+        `SELECT * FROM cards`
     );
     return result.rows;
 };
@@ -27,26 +25,16 @@ const createCard = async ({ name, level = 1, type, custo_elixir, description, im
     return result.rows[0];
 };
 
-const updateCard = async (id, fields) => {
-    const allowed = ["name", "level", "type", "custo_elixir", "description", "image_url"];
-    const setParts = [];
-    const values = [];
-    let idx = 1;
-    for (const key of allowed) {
-        if (fields[key] !== undefined) {
-            setParts.push(`${key} = $${idx}`);
-            values.push(fields[key]);
-            idx++;
-        }
-    }
-    if (setParts.length === 0) return null;
-    values.push(id);
+const updateCard = async (id, name, level, type, custo_elixir, description, image_url) => {
     const result = await pool.query(
-        `UPDATE cards SET ${setParts.join(", ")} WHERE id = $${idx} RETURNING *`,
-        values
+        `UPDATE cards 
+         SET name = $1, level = $2, type = $3, custo_elixir = $4, description = $5, image_url = $6 
+         WHERE id = $7 RETURNING *`,
+        [name, level, type, custo_elixir, description, image_url, id]
     );
     return result.rows[0];
 };
+
 
 const deleteCard = async (id) => {
     const result = await pool.query(

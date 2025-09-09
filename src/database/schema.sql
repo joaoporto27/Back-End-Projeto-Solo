@@ -1,3 +1,7 @@
+CREATE DATABASE deck_royale;
+
+\c deck_royale;
+
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
